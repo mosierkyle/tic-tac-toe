@@ -1,16 +1,12 @@
 'use strict'
 
 const player = (name, sign) => {
-    const sayHello = () => console.log(`Hello ${name}`);
-    return {name, sign, sayHello}
+    return {name, sign}
 }
 
 const gameBoard = (() => {
     const gameBoard = [['','',''],['','',''],['','','']];
      
-    const makeTurn = (row, col, sign) => gameBoard[row].splice(col, 1, sign);
-    const checkEmpty = (row, col) => (gameBoard[row][col] === '') ? true : false;
-    
     const checkWinner = (sign) => {
         for(let i = 0; i < gameBoard.length; i++) {
             if(gameBoard[i][0] === sign && gameBoard[i][1] === sign && gameBoard[i][2] === sign) {
@@ -27,56 +23,57 @@ const gameBoard = (() => {
         return false
     }
 
-    return {gameBoard, makeTurn, checkEmpty, checkWinner}
+    return {gameBoard, checkWinner}
 })();
 
 const displayController = (() => {
     const p1 = player('player1', 'X');
     const p2 = player('player2', 'O');
+    const header = document.querySelector('#header');
     let turn = 1;
-    const gameContainer = document.querySelector('#game');
-    
+
     const changeTurn = () => (turn === 1) ? turn-- : turn++;
 
     const whosTurn = () => (turn === 1) ? displayController.p1 : displayController.p2
 
-    const getRow = () => prompt("Enter the row")
-    const getCol = () => prompt("Enter the col")
-    
-    const displayBoard = () => gameContainer.textContent = gameBoard.gameBoard;
-
-    const playGame = () => {
-        console.log(`The game has begun`);
-        for(let i = 0; i < 9; i++) {
-            console.log(gameBoard.gameBoard[0])
-            console.log(gameBoard.gameBoard[1])
-            console.log(gameBoard.gameBoard[2])
-            if(gameBoard.checkWinner(displayController.p1.sign)) {
-                console.log(`${displayController.p1.name} is the winner`)
-            }
-            if(gameBoard.checkWinner(displayController.p2.sign)) {
-                console.log(`${displayController.p2.name} is the winner`)
-            }
-            
-            alert(`it is ${displayController.whosTurn().name}'s turn`);
-
-            let row = displayController.getRow()
-            let col = displayController.getCol()
-            if(!(gameBoard.checkEmpty(row,col))) {
-                alert("that spot is taken enter new numbers")
-                row = displayController.getRow()
-                col = displayController.getCol()
-                gameBoard.makeTurn(row, col, displayController.whosTurn().sign)
-            } else if (gameBoard.checkEmpty(row,col)) {
-                gameBoard.makeTurn(row, col, displayController.whosTurn().sign)
-            }
-            console.log(`---------------------------`);
-            displayController.changeTurn()
+    const addEvents = () => {
+        let count = 1;
+        for(let i = 0; i < 3; i++) {
+            for(let j = 0; j < 3; j++) {
+                let currentSquare = document.querySelector(`#square${count}`)
+                count++
+                currentSquare.addEventListener('click', () => {
+                if(currentSquare.textContent != '') {
+                    alert('This square is taken choose another!')
+                    return
+                }
+                if(displayController.whosTurn().sign == "X") {
+                    currentSquare.textContent = 'X'
+                    gameBoard.gameBoard[i].splice(j, 1, 'X');
+                    displayController.changeTurn()
+                    gameBoard.checkWinner()
+                    if(gameBoard.checkWinner(displayController.p1.sign)) {
+                        header.textContent = `${displayController.p1.name} is the winner!`
+                    }
+                    if(gameBoard.checkWinner(displayController.p2.sign)) {
+                        header.textContent = `${displayController.p2.name} is the winner!`
+                    }
+                } else if(displayController.whosTurn().sign == "O") {
+                    currentSquare.textContent = 'O'
+                    gameBoard.gameBoard[i].splice(j, 1, 'O');
+                    displayController.changeTurn()
+                    if(gameBoard.checkWinner(displayController.p1.sign)) {
+                        header.textContent = `${displayController.p1.name} is the winner`
+                    }
+                    if(gameBoard.checkWinner(displayController.p2.sign)) {
+                        header.textContent = `${displayController.p2.name} is the winner!`
+                    }
+                }
+            })
         }
-        console.log(`Its a tie!`);
     }
-
-    return {p1, p2, getRow, getCol, displayBoard, changeTurn, whosTurn, playGame}
+}
+    return {p1, p2, changeTurn, whosTurn, addEvents}
 })()
 
-displayController.playGame()
+displayController.addEvents()

@@ -18,7 +18,7 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    gap: 5rem;
+    gap: 4rem;
     text-align: center;
 }
 
@@ -45,8 +45,14 @@
     height: 50vh;
     width: 50vw;
     display: grid;
-    grid-template: repeat(3, 1fr) / repeat(3,1fr);
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
     justify-content: center;
+    background-color: rgba(0,0,0,0.1);
+    padding: 1rem;
+    border-radius: 15%;
+    min-height: 400px;
+    max-width: 500px;
+    min-width: 400px;
 }
 
 .square {

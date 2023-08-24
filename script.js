@@ -31,8 +31,10 @@ const displayController = (() => {
     const header = document.querySelector('#header');
     const resetBtn = document.querySelector(`#reset`);
     const playAgainBtn = document.querySelector(`#play-again`);
+    let turn = 1
 
     const resetBoard = () => {
+        turn = 0
         let counter = 1;
         for(let i = 0; i < 3; i++) {
             for(let j = 0; j < 3; j++) {
@@ -106,6 +108,12 @@ const displayController = (() => {
                 break
         }
         if (square.textContent == '') {
+            turn++
+            if(turn > 4) {
+                displayController.hideReset()
+                header.textContent = `Its a tie!`
+                return
+            }
             square.textContent = displayController.p2.sign
             gameBoard.gameBoard[r].splice(c, 1, displayController.p2.sign);
             if(gameBoard.checkWinner(displayController.p2.sign)) {
@@ -117,6 +125,7 @@ const displayController = (() => {
     }
 
     const addEvents = () => {
+        turn = 0;
         let count = 1;
         displayController.resetBoardBtn()
         for(let i = 0; i < 3; i++) {

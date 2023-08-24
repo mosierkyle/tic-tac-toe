@@ -30,14 +30,32 @@ const displayController = (() => {
     const p1 = player('player1', 'X');
     const p2 = player('player2', 'O');
     const header = document.querySelector('#header');
+    const resetBtn = document.querySelector(`#reset`);
     let turn = 1;
 
     const changeTurn = () => (turn === 1) ? turn-- : turn++;
 
     const whosTurn = () => (turn === 1) ? displayController.p1 : displayController.p2
 
+    const resetBoard = () => {
+        let counter = 1;
+        for(let i = 0; i < 3; i++) {
+            for(let j = 0; j < 3; j++) {
+                let current = document.querySelector(`#square${counter}`)
+                gameBoard.gameBoard[i].splice(j, 1, '');
+                current.textContent = ''
+                counter++
+            }
+        }
+    }
+
+    const resetBoardBtn = () => resetBtn.addEventListener('click', () => {
+        displayController.resetBoard()
+    })
+
     const addEvents = () => {
         let count = 1;
+        displayController.resetBoardBtn()
         for(let i = 0; i < 3; i++) {
             for(let j = 0; j < 3; j++) {
                 let currentSquare = document.querySelector(`#square${count}`)
@@ -73,7 +91,7 @@ const displayController = (() => {
         }
     }
 }
-    return {p1, p2, changeTurn, whosTurn, addEvents}
+    return {p1, p2, changeTurn, whosTurn, addEvents, resetBoard, resetBoardBtn}
 })()
 
 displayController.addEvents()

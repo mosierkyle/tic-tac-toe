@@ -6,7 +6,6 @@ const player = (name, sign) => {
 
 const gameBoard = (() => {
     const gameBoard = [['','',''],['','',''],['','','']];
-     
     const checkWinner = (sign) => {
         for(let i = 0; i < gameBoard.length; i++) {
             if(gameBoard[i][0] === sign && gameBoard[i][1] === sign && gameBoard[i][2] === sign) {
@@ -32,11 +31,6 @@ const displayController = (() => {
     const header = document.querySelector('#header');
     const resetBtn = document.querySelector(`#reset`);
     const playAgainBtn = document.querySelector(`#play-again`);
-    let turn = 1;
-
-    const changeTurn = () => (turn === 1) ? turn-- : turn++;
-
-    const whosTurn = () => (turn === 1) ? displayController.p1 : displayController.p2
 
     const resetBoard = () => {
         let counter = 1;
@@ -65,6 +59,63 @@ const displayController = (() => {
         })
     }
 
+    const getBotMove = () => {
+        let move = (Math.floor(Math.random() * 9) + 1);
+        let square = document.querySelector(`#square${move}`)
+        let r;
+        let c;
+        if(square.textContent != '') {
+            getBotMove()
+        } 
+        switch(move) {
+            case 1:
+                r = 0    
+                c = 0
+                break
+            case 2:
+                r = 0    
+                c = 1
+                break
+            case 3:
+                r = 0    
+                c = 2
+                break
+            case 4:
+                r = 1   
+                c = 0
+                break
+            case 5:
+                r = 1    
+                c = 1
+                break
+            case 6:
+                r = 1    
+                c = 2
+                break
+            case 7:
+                r = 2   
+                c = 0
+                break
+            case 8:
+                r = 2    
+                c = 1
+                break
+            case 9:
+                r = 2    
+                c = 2
+                break
+        }
+        if (square.textContent == '') {
+            square.textContent = displayController.p2.sign
+            gameBoard.gameBoard[r].splice(c, 1, displayController.p2.sign);
+            if(gameBoard.checkWinner(displayController.p2.sign)) {
+                displayController.hideReset()
+                header.textContent = `${displayController.p2.name} is the winner!`
+                return
+            }
+        }
+    }
+
     const addEvents = () => {
         let count = 1;
         displayController.resetBoardBtn()
@@ -73,41 +124,25 @@ const displayController = (() => {
                 let currentSquare = document.querySelector(`#square${count}`)
                 count++
                 currentSquare.addEventListener('click', () => {
-                if(currentSquare.textContent != '') {
-                    alert('This square is taken choose another!')
-                    return
-                }
-                if(displayController.whosTurn().sign == "X") {
-                    currentSquare.textContent = 'X'
-                    gameBoard.gameBoard[i].splice(j, 1, 'X');
-                    displayController.changeTurn()
-                    gameBoard.checkWinner()
+                    if(currentSquare.textContent != '') {
+                        alert('This square is taken choose another!')
+                        return
+                    }
+                    currentSquare.textContent = displayController.p1.sign
+                    gameBoard.gameBoard[i].splice(j, 1, displayController.p1.sign);
                     if(gameBoard.checkWinner(displayController.p1.sign)) {
                         displayController.hideReset()
                         header.textContent = `${displayController.p1.name} is the winner!`
+                        return
                     }
-                    if(gameBoard.checkWinner(displayController.p2.sign)) {
-                        displayController.hideReset()
-                        header.textContent = `${displayController.p2.name} is the winner!`
-                    }
-                } else if(displayController.whosTurn().sign == "O") {
-                    currentSquare.textContent = 'O'
-                    gameBoard.gameBoard[i].splice(j, 1, 'O');
-                    displayController.changeTurn()
-                    if(gameBoard.checkWinner(displayController.p1.sign)) {
-                        displayController.hideReset()
-                        header.textContent = `${displayController.p1.name} is the winner`
-                    }
-                    if(gameBoard.checkWinner(displayController.p2.sign)) {
-                        displayController.hideReset()
-                        header.textContent = `${displayController.p2.name} is the winner!`
-                    }
-                }
-            })
+                    window.setTimeout(() => {
+                        displayController.getBotMove()
+                    }, 500);
+                })
+            }
         }
     }
-}
-    return {p1, p2, changeTurn, whosTurn, addEvents, resetBoard, resetBoardBtn, hideReset}
+    return {p1, p2, addEvents, resetBoard, resetBoardBtn, hideReset, getBotMove}
 })()
 
 displayController.addEvents()

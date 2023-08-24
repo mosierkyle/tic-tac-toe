@@ -67,6 +67,12 @@ const displayController = (() => {
         let r;
         let c;
         if(square.textContent != '') {
+            turn++
+            if(turn > 4) {
+                displayController.hideReset()
+                header.textContent = `Its a tie!`
+                return
+            }
             getBotMove()
         } 
         switch(move) {
@@ -108,12 +114,6 @@ const displayController = (() => {
                 break
         }
         if (square.textContent == '') {
-            turn++
-            if(turn > 4) {
-                displayController.hideReset()
-                header.textContent = `Its a tie!`
-                return
-            }
             square.textContent = displayController.p2.sign
             gameBoard.gameBoard[r].splice(c, 1, displayController.p2.sign);
             if(gameBoard.checkWinner(displayController.p2.sign)) {

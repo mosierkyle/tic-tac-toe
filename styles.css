@@ -45,7 +45,7 @@
     height: 50vh;
     width: 50vw;
     display: grid;
-    grid-template: repeat(3, 150px) / repeat(3,150px);
+    grid-template: repeat(3, 1fr) / repeat(3,1fr);
     justify-content: center;
 }
 

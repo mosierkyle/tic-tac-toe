@@ -31,6 +31,7 @@ const displayController = (() => {
     const p2 = player('player2', 'O');
     const header = document.querySelector('#header');
     const resetBtn = document.querySelector(`#reset`);
+    const playAgainBtn = document.querySelector(`#play-again`);
     let turn = 1;
 
     const changeTurn = () => (turn === 1) ? turn-- : turn++;
@@ -53,6 +54,17 @@ const displayController = (() => {
         displayController.resetBoard()
     })
 
+    const hideReset= () => {
+        resetBtn.style.display = 'none'
+        playAgainBtn.style.display = 'block'
+        playAgainBtn.addEventListener('click', ()=> {
+            displayController.resetBoard()
+            header.textContent = 'Tic Tac Toe'
+            resetBtn.style.display = 'block'
+            playAgainBtn.style.display = 'none'
+        })
+    }
+
     const addEvents = () => {
         let count = 1;
         displayController.resetBoardBtn()
@@ -71,9 +83,11 @@ const displayController = (() => {
                     displayController.changeTurn()
                     gameBoard.checkWinner()
                     if(gameBoard.checkWinner(displayController.p1.sign)) {
+                        displayController.hideReset()
                         header.textContent = `${displayController.p1.name} is the winner!`
                     }
                     if(gameBoard.checkWinner(displayController.p2.sign)) {
+                        displayController.hideReset()
                         header.textContent = `${displayController.p2.name} is the winner!`
                     }
                 } else if(displayController.whosTurn().sign == "O") {
@@ -81,9 +95,11 @@ const displayController = (() => {
                     gameBoard.gameBoard[i].splice(j, 1, 'O');
                     displayController.changeTurn()
                     if(gameBoard.checkWinner(displayController.p1.sign)) {
+                        displayController.hideReset()
                         header.textContent = `${displayController.p1.name} is the winner`
                     }
                     if(gameBoard.checkWinner(displayController.p2.sign)) {
+                        displayController.hideReset()
                         header.textContent = `${displayController.p2.name} is the winner!`
                     }
                 }
@@ -91,7 +107,7 @@ const displayController = (() => {
         }
     }
 }
-    return {p1, p2, changeTurn, whosTurn, addEvents, resetBoard, resetBoardBtn}
+    return {p1, p2, changeTurn, whosTurn, addEvents, resetBoard, resetBoardBtn, hideReset}
 })()
 
 displayController.addEvents()
